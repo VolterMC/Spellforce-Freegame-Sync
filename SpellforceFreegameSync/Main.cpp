@@ -6,7 +6,7 @@
 #define SYNC_RATE 60.0
 #define MSG_RATE  1
 
-const DWORD gBasePtr = 0x0096A5C0;
+const DWORD gBasePtr = 0x00D6A5C0;
 const DWORD resourceOffsets[3][14] = {
   {0x19B, 0x19F, 0x1A7, 0x1AB, 0x1B3, 0x1DF, 0x1E3, 0x1EB, 0x1EF, 0x1F7, 0x1FB, 0x203, 0x22F, 0x233},
   {0x327, 0x32B, 0x333, 0x337, 0x33F, 0x36B, 0x36F, 0x377, 0x37B, 0x383, 0x387, 0x38F, 0x3BB, 0x3BF},
@@ -39,21 +39,10 @@ int main() {
           if (procHandle != NULL) {
             isGamePresent = TRUE;
             ReadProcessMemory(procHandle, (LPCVOID)gBasePtr, &baseAddr, sizeof(DWORD), NULL);
-            message = "SpellForce FreeGame synchronizer working!\n";
+            printf("PID: %d, Base Addr: 0x%08X\n", procId, baseAddr);
           }
         }
-        else {
-          message = "Cannot obtain SpellForce ProcessID!\n";
-        }
       }
-      else {
-        message = "SpellForce window not found!\n";
-      }
-
-      system("cls");
-      std::cout << "----SpellForce FreeGame synchronizer by VolterMC----\n";
-      std::cout << "----          Press PAUSE key to exit!          ----\n";
-      std::cout << "STATUS: " << message;
     }
 
     if ((clock() - syncTick) > (1000 / SYNC_RATE) && isGamePresent) {
