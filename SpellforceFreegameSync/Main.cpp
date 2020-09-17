@@ -69,7 +69,7 @@ int main() {
       INT absoluteDeltas[3][14] = { 0 };
       for (UINT8 resource = 0; resource < 14; ++resource) {
         for (UINT8 player = 0; player < 3; ++player) {
-          absoluteDeltas[player][resource] = currentResources[player][resource] - previousResources[player][resource];
+          absoluteDeltas[player][resource] = currentResources[player][resource] - previousResources[player][resource] - relativeDeltas[player][resource];
         }
         relativeDeltas[0][resource] = absoluteDeltas[1][resource] + absoluteDeltas[2][resource];
         relativeDeltas[1][resource] = absoluteDeltas[0][resource] + absoluteDeltas[2][resource];
