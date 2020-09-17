@@ -39,10 +39,21 @@ int main() {
           if (procHandle != NULL) {
             isGamePresent = TRUE;
             ReadProcessMemory(procHandle, (LPCVOID)gBasePtr, &baseAddr, sizeof(DWORD), NULL);
-            printf("PID: %d, Base Addr: 0x%08X\n", procId, baseAddr);
+            message = "SpellForce FreeGame synchronizer working!\n";
           }
         }
+        else {
+          message = "Cannot obtain SpellForce ProcessID!\n";
+        }
       }
+      else {
+        message = "SpellForce window not found!\n";
+      }
+
+      system("cls");
+      std::cout << "----SpellForce FreeGame synchronizer by VolterMC----\n";
+      std::cout << "----          Press PAUSE key to exit!          ----\n";
+      std::cout << "STATUS: " << message;
     }
 
     if ((clock() - syncTick) > (1000 / SYNC_RATE) && isGamePresent) {
