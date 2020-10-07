@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#define SYNC_RATE 60.0
+#define SYNC_RATE 100.0
 #define MSG_RATE  1
 
 const DWORD gBasePtr = 0x00D6A5C0;
@@ -18,44 +18,31 @@ int main() {
   HANDLE      procHandle = NULL;
   DWORD       procId = 0;
   BOOLEAN     isGamePresent = FALSE;
-  std::string message = "";
-  clock_t     messageTick = clock();
   clock_t     syncTick = clock();
   DWORD       baseAddr = 0;
   DWORD       currentResources[3][14] = { 0 };
   DWORD       previousResources[3][14] = { 0 };
   INT         relativeDeltas[3][14] = { 0 };
 
-  while (!GetAsyncKeyState(VK_PAUSE)) {
-    if ((clock() - messageTick) > (1000 / MSG_RATE)) {
-      messageTick = clock();
-      isGamePresent = FALSE;
-
-      gameWindowHandle = FindWindow(NULL, L"SpellForce");
-      if (gameWindowHandle != NULL) {
-        GetWindowThreadProcessId(gameWindowHandle, &procId);
-        if (procId != 0) {
-          procHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, procId);
-          if (procHandle != NULL) {
-            isGamePresent = TRUE;
-            ReadProcessMemory(procHandle, (LPCVOID)gBasePtr, &baseAddr, sizeof(DWORD), NULL);
-            message = "SpellForce FreeGame synchronizer working!\n";
-          }
-        }
-        else {
-          message = "Cannot obtain SpellForce ProcessID!\n";
-        }
+  gameWindowHandle = FindWindow(NULL, L"SpellForce");
+  if (gameWindowHandle != NULL) {
+    GetWindowThreadProcessId(gameWindowHandle, &procId);
+    if (procId != 0) {
+      procHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, procId);
+      if (procHandle != NULL) {
+        isGamePresent = TRUE;
+        ReadProcessMemory(procHandle, (LPCVOID)gBasePtr, &baseAddr, sizeof(DWORD), NULL);
+      } else {
+        return 0;
       }
-      else {
-        message = "SpellForce window not found!\n";
-      }
-
-      system("cls");
-      std::cout << "----SpellForce FreeGame synchronizer by VolterMC----\n";
-      std::cout << "----          Press PAUSE key to exit!          ----\n";
-      std::cout << "STATUS: " << message;
+    } else {
+      return 0;
     }
+  } else {
+    return 0;
+  }
 
+  while (!GetAsyncKeyState(VK_PAUSE)) {
     if ((clock() - syncTick) > (1000 / SYNC_RATE) && isGamePresent) {
       // Magic!
       // Read
